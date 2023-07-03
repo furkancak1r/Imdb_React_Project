@@ -1,11 +1,7 @@
-import './App.css';
-import ReactDOM from "react-dom/client";
-
+import "./App.css";
 
 function App() {
-  return (
-   <div></div>
-  );
+  return <div></div>;
 }
 
 export default App;

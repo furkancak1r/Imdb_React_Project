@@ -35,7 +35,7 @@ export default function Moviedetails() {
         className="card-img-top mx-auto"
         src={"https://image.tmdb.org/t/p/w500/" + moviedetails.poster_path}
         alt={moviedetails.title}
-        style={{ paddingTop:"10px", maxHeight: "300px", maxWidth: "200px" }}
+        style={{ paddingTop: "10px", maxHeight: "300px", maxWidth: "200px" }}
       />
       <div className="card-body">
         <h5 className="card-title">{moviedetails.title}</h5>

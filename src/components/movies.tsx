@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { MovieService } from "../services/movie.service";
 import { Movie, MovieResponse } from "../models/MovieResponse";
 import { Link } from "react-router-dom";
+import Pagination from "./pagination";
 
 interface State {
   movieResponse: MovieResponse;
@@ -23,13 +24,25 @@ export default class Movies extends Component<{}, State> {
     this.getPopularMovies();
   }
 
+  componentDidUpdate(_: {}, prevState: State): void {
+    if (prevState.currentPage !== this.state.currentPage) {
+      this.getPopularMovies();
+    }
+  }
+
   getPopularMovies() {
-    this.movieService.getPopularMovies().then((response) => {
-      this.setState({
-        movieResponse: response.data,
-        movies: response.data.results,
+    this.movieService
+      .getPopularMovies(this.state.currentPage)
+      .then((response) => {
+        this.setState({
+          movieResponse: response.data,
+          movies: response.data.results,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("An error occurred while fetching data. Please try again.");
       });
-    });
   }
 
   handleNextPage = () => {
@@ -44,16 +57,17 @@ export default class Movies extends Component<{}, State> {
     }));
   };
 
+  handleDataChange = (newPageNumber: number) => {
+    this.setState({ currentPage: newPageNumber });
+  };
+
   render() {
-    const { movies, currentPage, moviesPerPage } = this.state;
-    const indexOfLastMovie = currentPage * moviesPerPage;
-    const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
-    const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
+    const { movies, currentPage } = this.state;
 
     return (
       <div className="container d-flex flex-column justify-content-center align-items-center">
         <div className="row">
-          {currentMovies.map((movie) => (
+          {movies.map((movie) => (
             <div key={movie.id} className="col mb-4">
               <div
                 className="card overflow-hidden"
@@ -64,14 +78,20 @@ export default class Movies extends Component<{}, State> {
                     pathname: `movie-details/${movie.id}`,
                   }}
                 >
-                  <img
-                    src={
-                      "https://image.tmdb.org/t/p/w500/" + movie.backdrop_path
-                    }
-                    className="card-img-top img-fluid"
-                    alt={movie.title}
-                    style={{ cursor: "pointer" }}
-                  />
+                  {movie.backdrop_path ? (
+                    <img
+                      src={
+                        "https://image.tmdb.org/t/p/w500/" + movie.backdrop_path
+                      }
+                      className="card-img-top img-fluid"
+                      alt={movie.title}
+                      style={{ cursor: "pointer" }}
+                    />
+                  ) : (
+                    <div className="d-flex justify-content-center align-items-center bg-secondary text-white p-3">
+                      Image not available
+                    </div>
+                  )}
                 </Link>
                 <div className="card-body hide-scrollbar">
                   <h5 className="card-title">{movie.title}</h5>
@@ -100,26 +120,11 @@ export default class Movies extends Component<{}, State> {
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
-          {currentPage > 1 && (
-            <button
-              className="btn btn-primary mr-2"
-              onClick={this.handlePreviousPage}
-              style={{ margin: "2px" }}
-            >
-              Back
-            </button>
-          )}
-          {movies.length > indexOfLastMovie && (
-            <button
-              className="btn btn-primary"
-              style={{ margin: "2px" }}
-              onClick={this.handleNextPage}
-            >
-              Next
-            </button>
-          )}
-        </div>
+        ></div>
+        <Pagination
+          pageNumber={currentPage}
+          onDataChange={this.handleDataChange}
+        />
       </div>
     );
   }

@@ -8,9 +8,8 @@ export class MovieService {
       Authorization: "Bearer " + this.apiKey,
     },
   });
-
-  getPopularMovies() {
-    let url = "movie/popular";
+  getPopularMovies(pageNumber: number) {
+    let url = `movie/popular?language=en-US&page=${pageNumber}`;
     return this.api.get(url);
   }
   getMovieDetails(movieId:number){
