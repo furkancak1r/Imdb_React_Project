@@ -31,6 +31,7 @@ export default class Pagination extends Component<Props> {
     return (
       <nav style={{ cursor: "pointer" }} aria-label="Page navigation example">
         <ul className="pagination">
+          {pageNumber > 1 && ( // Bu satırı ekledim
           <li className="page-item">
             <a className="page-link" aria-label="Previous">
               <span aria-hidden="true">«</span>
@@ -42,6 +43,7 @@ export default class Pagination extends Component<Props> {
               </span>
             </a>
           </li>
+          )} 
           {pageNumber > 1 && (
             <li
               onClick={() => this.handleDataChange(pageNumber - 1)}

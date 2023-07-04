@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.js";
 import Movies from "./components/movies";
 import Moviedetails from "./components/moviedetails";
 import reportWebVitals from "./reportWebVitals";
+import Homepage from "./components/homepage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,10 +15,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Movies />} />
+      <Route path="/" element={<Homepage />} />
 
       <Route path="movies" element={<Movies />} />
-      <Route path="movie-details/:movieId" element={<Moviedetails />} />
+      <Route path="movies/movie-details/:movieId" element={<Moviedetails />} />
     </Routes>
   </BrowserRouter>
 );

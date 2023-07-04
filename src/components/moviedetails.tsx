@@ -4,6 +4,7 @@ import { MovieService } from "../services/movie.service";
 import { MovieDetailsTypes } from "../models/MovieDetailsTypes";
 
 export default function Moviedetails() {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const movieService = new MovieService();
   const { movieId } = useParams();
   const [moviedetails, setMoviedetails] = useState<MovieDetailsTypes | null>(
