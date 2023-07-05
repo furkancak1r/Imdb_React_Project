@@ -4,11 +4,10 @@ import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import Movies from "./components/movies";
-import Moviedetails from "./components/moviedetails";
+import Movies from "./components/movies/movies";
+import Moviedetails from "./components/movies/moviedetails";
 import reportWebVitals from "./reportWebVitals";
-import Homepage from "./components/homepage";
-
+import Homepage from "./components/homepage/homepage";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -16,9 +15,11 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Homepage />} />
-
-      <Route path="movies" element={<Movies />} />
-      <Route path="movies/movie-details/:movieId" element={<Moviedetails />} />
+      <Route path="movies/top-rated" element={<Movies />} />
+      <Route path="movies/upcoming" element={<Movies />} />
+      <Route path="movies/now-playing" element={<Movies />} />
+      <Route path="/movies/popular-movies" element={<Movies />} />
+      <Route path="movie-details/:movieId" element={<Moviedetails />} />
     </Routes>
   </BrowserRouter>
 );

@@ -15,7 +15,17 @@ export class MovieService {
   getMovieDetails(movieId:number){
     let url = `movie/${movieId}`;
     return this.api.get(url);
-
-
+  }
+  getTopRatedMovies(pageNumber: number){
+    let url = `movie/top_rated?language=en-US&page=${pageNumber}`;
+    return this.api.get(url);
+  }
+  getUpcomingMovies(pageNumber: number){
+    let url = `movie/upcoming?language=en-US&page=${pageNumber}`;
+    return this.api.get(url);
+  }
+  nowPlayingMovies(pageNumber: number){
+    let url = `movie/now_playing?language=en-US&page=${pageNumber}`;
+    return this.api.get(url);
   }
 }

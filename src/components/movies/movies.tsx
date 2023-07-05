@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { MovieService } from "../services/movie.service";
-import { Movie, MovieResponse } from "../models/MovieResponse";
+import { Component } from "react";
+import { MovieService } from "../../services/movie.service";
+import { Movie, MovieResponse } from "../../interfaces/MovieResponse";
 import { Link } from "react-router-dom";
-import Pagination from "./pagination";
+import Pagination from "../pagination";
 
 interface State {
   movieResponse: MovieResponse;
   movies: Movie[];
   currentPage: number;
-  moviesPerPage: number;
+  movieurl:string
 }
 
 export default class Movies extends Component<{}, State> {
@@ -17,17 +17,82 @@ export default class Movies extends Component<{}, State> {
     movieResponse: {} as MovieResponse,
     movies: [] as Movie[],
     currentPage: 1,
-    moviesPerPage: 9,
+    movieurl:window.location.pathname
   };
 
   componentDidMount(): void {
-    this.getPopularMovies();
+    if (this.state.movieurl === "/movies/popular-movies") {
+      this.getPopularMovies();
+    }
+    if (this.state.movieurl === "/movies/top-rated") {
+      this.getTopRatedMovies();
+    }
+    if (this.state.movieurl === "/movies/upcoming") {
+      this.getUpcomingMovies();
+    }
+    if (this.state.movieurl === "/movies/now-playing") {
+      this.nowPlayingMovies();
+    }
   }
 
   componentDidUpdate(_: {}, prevState: State): void {
     if (prevState.currentPage !== this.state.currentPage) {
-      this.getPopularMovies();
+      if (this.state.movieurl === "/movies") {
+        this.getPopularMovies();
+      }
+      if (this.state.movieurl === "/movies/top-rated") {
+        this.getTopRatedMovies();
+      }
+      if (this.state.movieurl === "/movies/upcoming") {
+        this.getUpcomingMovies();
+      }
+      if (this.state.movieurl === "/movies/now-playing") {
+        this.nowPlayingMovies();
+      }
     }
+  }
+  nowPlayingMovies() {
+    this.movieService
+      .nowPlayingMovies(this.state.currentPage)
+      .then((response) => {
+        this.setState({
+          movieResponse: response.data,
+          movies: response.data.results,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("An error occurred while fetching data. Please try again.");
+      });
+  }
+  
+  getTopRatedMovies() {
+    this.movieService
+      .getTopRatedMovies(this.state.currentPage)
+      .then((response) => {
+        this.setState({
+          movieResponse: response.data,
+          movies: response.data.results,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("An error occurred while fetching data. Please try again.");
+      });
+  }
+  getUpcomingMovies() {
+    this.movieService
+      .getUpcomingMovies(this.state.currentPage)
+      .then((response) => {
+        this.setState({
+          movieResponse: response.data,
+          movies: response.data.results,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("An error occurred while fetching data. Please try again.");
+      });
   }
 
   getPopularMovies() {
@@ -75,7 +140,7 @@ export default class Movies extends Component<{}, State> {
               >
                 <Link
                   to={{
-                    pathname: `movie-details/${movie.id}`,
+                    pathname: `/movie-details/${movie.id}`,
                   }}
                 >
                   {movie.backdrop_path ? (
