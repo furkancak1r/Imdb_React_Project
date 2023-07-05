@@ -1,14 +1,39 @@
 import { Component } from "react";
+import Cardfront from "./cards/cardfront";
+import Cardback from "./cards/cardback";
 import { Link } from "react-router-dom";
 
-export default class Homepage extends Component {
+interface HomepageState {
+  imageName: string;
+  isFlipped: boolean;
+}
+
+export default class Homepage extends Component<{}, HomepageState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      imageName: "/nGxUxi3PfXDRm7Vg95VBNgNM8yc.jpg",
+      isFlipped: false,
+    };
+  }
+
+  handleMouseEnter = () => {
+    this.setState({ isFlipped: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ isFlipped: false });
+  };
+
   render() {
+    const { imageName, isFlipped } = this.state;
+
     return (
       <div>
         <div style={{ textAlign: "center", paddingTop: "10%" }}>
           <h1 style={{ fontWeight: "400" }}>IMDB Movies React Project</h1>
           <br></br>
-          <p>
+          <p className="furkan">
             This project is developed using React with TypeScript.
             <br /> It is a movie application that retrieves movie data and
             displays it to the user.
@@ -41,23 +66,28 @@ export default class Homepage extends Component {
             />
           </a>
         </div>
+
         <div className="container d-flex flex-column justify-content-center align-items-center">
           <div className="row">
             <div className="col mb-4">
-              <div
-                style={{ padding:"30px" }}
-              >
+              <div style={{ padding: "30px" }}>
                 <Link
                   to={{
                     pathname: `movies`,
                   }}
+                  style={{ color: "inherit", textDecoration: "none" }}
                 >
-                  <img
-                    src={"https://image.tmdb.org/t/p/w500/nGxUxi3PfXDRm7Vg95VBNgNM8yc.jpg"}
-                    className="card-img-top img-fluid"
-                    alt=""
-                    style={{ cursor: "pointer",borderRadius:"20px",boxShadow:"7px 10px 30px black" }}
-                  />                
+                  <div
+                    //style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+                    onMouseEnter={this.handleMouseEnter}
+                    onMouseLeave={this.handleMouseLeave}
+                  >
+                    {isFlipped ? (
+                      <Cardback />
+                    ) : (
+                      <Cardfront imageName={imageName} />
+                    )}
+                  </div>
                 </Link>
               </div>
             </div>
