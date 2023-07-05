@@ -8,121 +8,94 @@ interface State {
   movieResponse: MovieResponse;
   movies: Movie[];
   currentPage: number;
-  movieurl:string
+  movieurl: string;
+}
+
+interface MovieServiceFunction {
+  (currentPage: number): Promise<MovieResponse>;
+}
+
+interface MovieServiceMap {
+  [key: string]: MovieServiceFunction;
 }
 
 export default class Movies extends Component<{}, State> {
   movieService = new MovieService();
+  movieServiceMap: MovieServiceMap = {
+    "/movies/popular-movies": this.getPopularMovies,
+    "/movies/top-rated": this.getTopRatedMovies,
+    "/movies/upcoming": this.getUpcomingMovies,
+    "/movies/now-playing": this.nowPlayingMovies,
+  };
+
   state: State = {
     movieResponse: {} as MovieResponse,
     movies: [] as Movie[],
     currentPage: 1,
-    movieurl:window.location.pathname
+    movieurl: window.location.pathname,
   };
 
   componentDidMount(): void {
-    if (this.state.movieurl === "/movies/popular-movies") {
-      this.getPopularMovies();
-    }
-    if (this.state.movieurl === "/movies/top-rated") {
-      this.getTopRatedMovies();
-    }
-    if (this.state.movieurl === "/movies/upcoming") {
-      this.getUpcomingMovies();
-    }
-    if (this.state.movieurl === "/movies/now-playing") {
-      this.nowPlayingMovies();
-    }
+    this.fetchMovies();
   }
 
   componentDidUpdate(_: {}, prevState: State): void {
     if (prevState.currentPage !== this.state.currentPage) {
-      if (this.state.movieurl === "/movies") {
-        this.getPopularMovies();
-      }
-      if (this.state.movieurl === "/movies/top-rated") {
-        this.getTopRatedMovies();
-      }
-      if (this.state.movieurl === "/movies/upcoming") {
-        this.getUpcomingMovies();
-      }
-      if (this.state.movieurl === "/movies/now-playing") {
-        this.nowPlayingMovies();
-      }
+      this.fetchMovies();
     }
   }
-  nowPlayingMovies() {
-    this.movieService
-      .nowPlayingMovies(this.state.currentPage)
-      .then((response) => {
-        this.setState({
-          movieResponse: response.data,
-          movies: response.data.results,
+
+  fetchMovies(): void {
+    const { movieServiceMap, state } = this;
+    const fetchMoviesFn = movieServiceMap[state.movieurl];
+    if (fetchMoviesFn) {
+      fetchMoviesFn.call(this, state.currentPage)
+        .then((response: MovieResponse) => {
+          this.setState({
+            movieResponse: response,
+            movies: response.results,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("An error occurred while fetching data. Please try again.");
         });
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("An error occurred while fetching data. Please try again.");
-      });
-  }
-  
-  getTopRatedMovies() {
-    this.movieService
-      .getTopRatedMovies(this.state.currentPage)
-      .then((response) => {
-        this.setState({
-          movieResponse: response.data,
-          movies: response.data.results,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("An error occurred while fetching data. Please try again.");
-      });
-  }
-  getUpcomingMovies() {
-    this.movieService
-      .getUpcomingMovies(this.state.currentPage)
-      .then((response) => {
-        this.setState({
-          movieResponse: response.data,
-          movies: response.data.results,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("An error occurred while fetching data. Please try again.");
-      });
+    }
   }
 
-  getPopularMovies() {
-    this.movieService
-      .getPopularMovies(this.state.currentPage)
-      .then((response) => {
-        this.setState({
-          movieResponse: response.data,
-          movies: response.data.results,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("An error occurred while fetching data. Please try again.");
-      });
+  nowPlayingMovies(currentPage: number): Promise<MovieResponse> {
+    return this.movieService.nowPlayingMovies(currentPage)
+      .then((response) => response.data);
   }
 
-  handleNextPage = () => {
+  getTopRatedMovies(currentPage: number): Promise<MovieResponse> {
+    return this.movieService.getTopRatedMovies(currentPage)
+      .then((response) => response.data);
+  }
+
+  getUpcomingMovies(currentPage: number): Promise<MovieResponse> {
+    return this.movieService.getUpcomingMovies(currentPage)
+      .then((response) => response.data);
+  }
+
+  getPopularMovies(currentPage: number): Promise<MovieResponse> {
+    return this.movieService.getPopularMovies(currentPage)
+      .then((response) => response.data);
+  }
+
+  handleNextPage = (): void => {
     this.setState((prevState) => ({
       currentPage: prevState.currentPage + 1,
     }));
   };
 
-  handlePreviousPage = () => {
+  handlePreviousPage = (): void => {
     this.setState((prevState) => ({
       currentPage: prevState.currentPage - 1,
     }));
   };
 
-  handleDataChange = (newPageNumber: number) => {
+  handleDataChange = (newPageNumber: number): void => {
     this.setState({ currentPage: newPageNumber });
   };
 
