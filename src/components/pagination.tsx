@@ -29,7 +29,7 @@ export default class Pagination extends Component<Props> {
     const { pageNumber } = this.props;
 
     return (
-      <nav style={{ cursor: "pointer" }} aria-label="Page navigation example">
+      <nav style={{ cursor: "pointer" ,display:"flex",justifyContent: "center"}} aria-label="Page navigation example">
         <ul className="pagination">
           {pageNumber > 1 && ( // Bu satırı ekledim
           <li className="page-item">

@@ -12,20 +12,24 @@ export class MovieService {
     let url = `movie/popular?language=en-US&page=${pageNumber}`;
     return this.api.get(url);
   }
-  getMovieDetails(movieId:number){
+  getMovieDetails(movieId: number) {
     let url = `movie/${movieId}`;
     return this.api.get(url);
   }
-  getTopRatedMovies(pageNumber: number){
+  getTopRatedMovies(pageNumber: number) {
     let url = `movie/top_rated?language=en-US&page=${pageNumber}`;
     return this.api.get(url);
   }
-  getUpcomingMovies(pageNumber: number){
+  getUpcomingMovies(pageNumber: number) {
     let url = `movie/upcoming?language=en-US&page=${pageNumber}`;
     return this.api.get(url);
   }
-  nowPlayingMovies(pageNumber: number){
+  getNowPlayingMovies(pageNumber: number) {
     let url = `movie/now_playing?language=en-US&page=${pageNumber}`;
+    return this.api.get(url);
+  }
+  getMoviesByName(movieName: string, pageNumber: number) {
+    let url = `search/movie?query=${movieName}&include_adult=false&language=en-US&page=${pageNumber}`;
     return this.api.get(url);
   }
 }
