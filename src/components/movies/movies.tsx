@@ -11,6 +11,7 @@ interface State {
   currentPage: number;
   movieurl: string;
   movieName: string;
+  showButton: boolean;
 }
 
 interface MovieServiceFunction {
@@ -46,11 +47,24 @@ export default class Movies extends Component<{}, State> {
     currentPage: 1,
     movieurl: window.location.pathname,
     movieName: "",
+    showButton: false,
   };
 
   componentDidMount(): void {
     this.fetchMovies();
+    window.addEventListener("scroll", this.handleScroll);
   }
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll = () => {
+    if (window.scrollY > 400) {
+      this.setState({ showButton: true });
+    } else {
+      this.setState({ showButton: false });
+    }
+  };
 
   componentDidUpdate(_: {}, prevState: State): void {
     if (prevState.currentPage !== this.state.currentPage) {
@@ -128,7 +142,9 @@ export default class Movies extends Component<{}, State> {
   handleDataChange = (newPageNumber: number): void => {
     this.setState({ currentPage: newPageNumber });
   };
-
+  handleButtonClick = () => {
+    window.scrollTo(0, 0);
+  };
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const movieName = event.target.value;
     this.setState({ movieName }, () => {
@@ -241,6 +257,21 @@ export default class Movies extends Component<{}, State> {
             />
           ) : null}
         </div>
+        <img
+          style={{
+            borderRadius: "25px",
+            position: "fixed",
+            right: "5%",
+            bottom: "5%",
+            cursor: "pointer",
+            display: this.state.showButton ? "block" : "none",
+          }}
+          width="50"
+          height="50"
+          src="/arrow-image.png"
+          alt="page-up"
+          onClick={this.handleButtonClick}
+        />
       </div>
     );
   }
