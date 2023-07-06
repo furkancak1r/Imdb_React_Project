@@ -203,7 +203,7 @@ export default class Movies extends Component<{}, State> {
             </form>
           </div>
         </nav>
-        <div style={{ marginTop: "7%" }} className="container">
+        <div style={{ marginTop: "8%" }} className="container">
           <div className="row">
             {movies.map((movie) => (
               <div key={movie.id} className="col mb-4">
