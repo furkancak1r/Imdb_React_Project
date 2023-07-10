@@ -4,7 +4,7 @@ import { MovieService } from "../../services/movie.service";
 import { Movie, MovieResponse } from "../../interfaces/MovieResponse";
 import { Link } from "react-router-dom";
 import Pagination from "../pagination";
-
+import "./styles.css";
 interface State {
   movieResponse: MovieResponse;
   movies: Movie[];
@@ -12,6 +12,7 @@ interface State {
   movieurl: string;
   movieName: string;
   showButton: boolean;
+  checkInput: boolean;
 }
 
 interface MovieServiceFunction {
@@ -48,6 +49,7 @@ export default class Movies extends Component<{}, State> {
     movieurl: window.location.pathname,
     movieName: "",
     showButton: false,
+    checkInput: false,
   };
 
   componentDidMount(): void {
@@ -145,14 +147,25 @@ export default class Movies extends Component<{}, State> {
   handleButtonClick = () => {
     window.scrollTo(0, 0);
   };
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const movieName = event.target.value;
+  handleInputChange = (
+    event?: React.ChangeEvent<HTMLInputElement>,
+    value?: string
+  ) => {
+    const element = document.getElementById("searchSuggestions");
+    if (element) {
+      element.style.display = "block";
+    };
+    const movieName = value || event?.target.value || "";
     this.setState({ movieName }, () => {
       const { movieName, currentPage } = this.state;
       if (movieName === "") {
         // Input alanı boş ise tüm filmleri getir
+        this.setState({ checkInput: false });
+
         this.fetchMovies();
       } else {
+        this.setState({ checkInput: true });
+
         // Input alanında bir değer varsa ilgili filmleri getir
         this.getMoviesByName(movieName, currentPage)
           .then((response: MovieResponse) => {
@@ -169,9 +182,22 @@ export default class Movies extends Component<{}, State> {
     });
   };
 
+  passInput = (event: React.MouseEvent<HTMLLIElement>) => {
+    const target = event.target as HTMLLIElement;
+    this.handleInputChange(undefined, target.innerText);
+    const element = document.getElementById("searchSuggestions");
+    if (element) {
+      element.style.display = "none";
+    };
+  };
+
   render() {
-    const { movieurl, movies, currentPage } = this.state;
+    const { movieurl, movies, currentPage, checkInput } = this.state;
     const pageTitle = this.getPageTitle(movieurl);
+    const slicedMovies = movies.slice(0, 4);
+    const searchSuggestionsHeight =
+      document.getElementById("searchSuggestions")?.offsetHeight;
+
     return (
       <div>
         <nav
@@ -184,26 +210,62 @@ export default class Movies extends Component<{}, State> {
           }}
         >
           <div className="container">
-            <h1 className="navbar-brand">{pageTitle}</h1>
-
             <form
               className="form-inline ml-auto"
-              style={{ paddingRight: "1%" }}
+              style={{
+                paddingRight: "1%",
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
             >
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="search"
-                  placeholder="Search for movies.."
-                  aria-label="Search"
-                  value={this.state.movieName}
-                  onChange={this.handleInputChange}
-                />
+              <h1 className="navbar-brand">{pageTitle}</h1>
+              <div>
+                <div className="input-group">
+                  <input
+                    id="search"
+                    className="form-control"
+                    type="search"
+                    placeholder="Search for movies.."
+                    aria-label="Search"
+                    value={this.state.movieName}
+                    onChange={this.handleInputChange}
+                  />
+                </div>
+                <div
+                  id="searchSuggestions"
+                  className="input-group"
+                  style={{ position: "absolute" }}
+                >
+                  <div
+                    style={{ width: "200px", boxShadow: "7px 10px 30px black" }}
+                  >
+                    {checkInput ? (
+                      <ul className="list-group">
+                        {slicedMovies.map((movie) => (
+                          <li
+                            onClick={this.passInput}
+                            className="list-group-item"
+                            key={movie.id}
+                          >
+                            {movie.title}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             </form>
           </div>
         </nav>
-        <div style={{ marginTop: "8%" }} className="container">
+
+        <div
+          style={{
+            marginTop: `calc(2% + ${searchSuggestionsHeight}px + 8%)`,
+          }}
+          className="container"
+        >
           <div className="row">
             {movies.map((movie) => (
               <div key={movie.id} className="col mb-4">

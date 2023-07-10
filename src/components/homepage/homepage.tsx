@@ -88,7 +88,7 @@ export default class Homepage extends Component<{}, HomepageState> {
 
     return (
       <div>
-        <div style={{ textAlign: "center", paddingTop: "4%" }}>
+        <div style={{ textAlign: "center", paddingTop: "3%" }}>
           <h1 style={{ fontWeight: "400" }}>IMDB Movies React Project</h1>
           <br />
           <p className="furkan">
