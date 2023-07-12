@@ -51,14 +51,86 @@ export default class Movies extends Component<{}, State> {
     showButton: false,
     checkInput: false,
   };
-
   componentDidMount(): void {
     this.fetchMovies();
     window.addEventListener("scroll", this.handleScroll);
+    document.addEventListener("keydown", this.handleKeyDown);
   }
+
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
+    document.removeEventListener("keydown", this.handleKeyDown);
   }
+
+  handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowDown") {
+      this.handleArrowDown();
+    } else if (event.key === "ArrowUp") {
+      this.handleArrowUp();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      this.handleInputChange(undefined, this.state.movieName);
+      const element = document.getElementById("searchSuggestions");
+      if (element) {
+        element.style.display = "none";
+      }
+    }
+  };
+  handleArrowDown = () => {
+    const listGroupItems = document.getElementsByClassName("list-group-item");
+    const currentItem = document.querySelector(".list-group-item.lightgray");
+
+    // Eğer mevcut bir öğe varsa, stilini temizle
+    if (currentItem) {
+      currentItem.classList.remove("lightgray");
+      const nextIndex =
+        Array.from(listGroupItems).findIndex((item) => item === currentItem) +
+        1;
+      const nextItem = listGroupItems.item(nextIndex);
+      if (nextItem) {
+        nextItem.classList.add("lightgray");
+        this.setState({ movieName: (nextItem as any).innerText });
+      } else {
+        listGroupItems[0]?.classList.add("lightgray");
+        this.setState({ movieName: (listGroupItems[0] as any)?.innerText });
+      }
+    } else if (listGroupItems.length > 0) {
+      // Mevcut bir öğe yoksa, ilk öğeyi boyayın
+      listGroupItems[0]?.classList.add("lightgray");
+      this.setState({ movieName: (listGroupItems[0] as any)?.innerText });
+    }
+  };
+
+  handleArrowUp = () => {
+    const listGroupItems = document.getElementsByClassName("list-group-item");
+    const currentItem = document.querySelector(".list-group-item.lightgray");
+
+    // Eğer mevcut bir öğe varsa, stilini temizle
+    if (currentItem) {
+      currentItem.classList.remove("lightgray");
+      const prevIndex =
+        Array.from(listGroupItems).findIndex((item) => item === currentItem) -
+        1;
+      const prevItem = listGroupItems.item(prevIndex);
+      if (prevItem) {
+        prevItem.classList.add("lightgray");
+        this.setState({ movieName: (prevItem as any).innerText });
+      } else {
+        listGroupItems[listGroupItems.length - 1]?.classList.add("lightgray");
+        this.setState({
+          movieName: (listGroupItems[listGroupItems.length - 1] as any)
+            ?.innerText,
+        });
+      }
+    } else if (listGroupItems.length > 0) {
+      // Mevcut bir öğe yoksa, son öğeyi boyayın
+      listGroupItems[listGroupItems.length - 1]?.classList.add("lightgray");
+      this.setState({
+        movieName: (listGroupItems[listGroupItems.length - 1] as any)
+          ?.innerText,
+      });
+    }
+  };
 
   handleScroll = () => {
     if (window.scrollY > 400) {
@@ -154,7 +226,7 @@ export default class Movies extends Component<{}, State> {
     const element = document.getElementById("searchSuggestions");
     if (element) {
       element.style.display = "block";
-    };
+    }
     const movieName = value || event?.target.value || "";
     this.setState({ movieName }, () => {
       const { movieName, currentPage } = this.state;
@@ -188,7 +260,7 @@ export default class Movies extends Component<{}, State> {
     const element = document.getElementById("searchSuggestions");
     if (element) {
       element.style.display = "none";
-    };
+    }
   };
 
   render() {
