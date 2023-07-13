@@ -2,24 +2,9 @@ import React, { Component } from "react";
 import Cardfront from "./homepagecards/cardfront";
 import Cardback from "./homepagecards/cardback";
 import { Link } from "react-router-dom";
+import {HomepageState} from "../../interfaces/HomePageInterface"
 
-interface HomepageState {
-  imageNamePopularMovies: string;
-  isFlippedPopularMovies: boolean;
-  isFlippedTopRatedMovies: boolean;
-  isFlippedUpcomingMovies: boolean;
-  isFlippedNowPlayingMovies: boolean;
-
-  imageNameUpcomingMovies: string;
-  CardBackTitlePopularMovies: string;
-  CardBackTitleTopRatedMovies: string;
-  imageNameTopRatedMovies: string;
-  CardBackTitleUpcomingMovies: string;
-  imageNameNowPlayingMovies: string;
-  CardBackNowPlayingMovies: string;
-}
-
-export default class Homepage extends Component<{}, HomepageState> {
+class Homepage extends Component<{}, HomepageState> {
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -39,37 +24,13 @@ export default class Homepage extends Component<{}, HomepageState> {
       isFlippedNowPlayingMovies:false
     };
   }
-
-  PopularMovieshandleMouseEnter = () => {
-    this.setState({ isFlippedPopularMovies: true });
+  handleMouseEnter = (key: keyof HomepageState) => {
+    this.setState(prevState => ({ ...prevState, [key]: true }));
   };
 
-  PopularMovieshandleMouseLeave = () => {
-    this.setState({ isFlippedPopularMovies: false });
+  handleMouseLeave = (key: keyof HomepageState) => {
+    this.setState(prevState => ({ ...prevState, [key]: false }));
   };
-
-  TopRatedhandleMouseEnter = () => {
-    this.setState({ isFlippedTopRatedMovies: true });
-  };
-
-  TopRatedhandleMouseLeave = () => {
-    this.setState({ isFlippedTopRatedMovies: false });
-  };
-  UpcominghandleMouseEnter = () => {
-    this.setState({ isFlippedUpcomingMovies: true });
-  };
-
-  UpcominghandleMouseLeave = () => {
-    this.setState({ isFlippedUpcomingMovies: false });
-  };
-  NowPlayinghandleMouseEnter = () => {
-    this.setState({ isFlippedNowPlayingMovies: true });
-  };
-
-  NowPlayinghandleMouseLeave = () => {
-    this.setState({ isFlippedNowPlayingMovies: false });
-  };
-
   render() {
     const {
       CardBackTitlePopularMovies,
@@ -101,33 +62,17 @@ export default class Homepage extends Component<{}, HomepageState> {
           </p>
         </div>
         <div style={{ textAlign: "center" }}>
-          <a
+          <SocialLink
             href="https://github.com/furkancak1r"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img
-              src="/github-mark.png"
-              alt="Github Logo"
-              style={{ margin: "10px", width: "61.3px", height: "52.2624px" }}
-            />
-          </a>
-          <a
+            imageSrc="/github-mark.png"
+          />
+          <SocialLink
             href="https://www.linkedin.com/in/muhammet-furkan-%C3%A7ak%C4%B1r-b3a64515a/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img
-              src="/LI-In-Bug.png"
-              alt="Github Logo"
-              style={{ margin: "10px", width: "61.3px", height: "52.2624px" }}
-            />
-          </a>
+            imageSrc="/LI-In-Bug.png"
+          />
         </div>
 
-        <div
-          className={`container d-flex flex-column justify-content-center align-items-center`}
-        >
+        <div className="container d-flex flex-column justify-content-center align-items-center">
           <div className="row">
             <div id="Popular_Movies" className="col mb-4">
               <div style={{ padding: "30px" }}>
@@ -138,8 +83,12 @@ export default class Homepage extends Component<{}, HomepageState> {
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <div
-                    onMouseEnter={this.PopularMovieshandleMouseEnter}
-                    onMouseLeave={this.PopularMovieshandleMouseLeave}
+                    onMouseEnter={() =>
+                      this.handleMouseEnter("isFlippedPopularMovies")
+                    }
+                    onMouseLeave={() =>
+                      this.handleMouseLeave("isFlippedPopularMovies")
+                    }
                   >
                     {isFlippedPopularMovies ? (
                       <Cardback cardbacktitle={CardBackTitlePopularMovies} />
@@ -159,8 +108,12 @@ export default class Homepage extends Component<{}, HomepageState> {
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <div
-                    onMouseEnter={this.TopRatedhandleMouseEnter}
-                    onMouseLeave={this.TopRatedhandleMouseLeave}
+                    onMouseEnter={() =>
+                      this.handleMouseEnter("isFlippedTopRatedMovies")
+                    }
+                    onMouseLeave={() =>
+                      this.handleMouseLeave("isFlippedTopRatedMovies")
+                    }
                   >
                     {isFlippedTopRatedMovies ? (
                       <Cardback cardbacktitle={CardBackTitleTopRatedMovies} />
@@ -182,8 +135,12 @@ export default class Homepage extends Component<{}, HomepageState> {
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <div
-                    onMouseEnter={this.UpcominghandleMouseEnter}
-                    onMouseLeave={this.UpcominghandleMouseLeave}
+                    onMouseEnter={() =>
+                      this.handleMouseEnter("isFlippedUpcomingMovies")
+                    }
+                    onMouseLeave={() =>
+                      this.handleMouseLeave("isFlippedUpcomingMovies")
+                    }
                   >
                     {isFlippedUpcomingMovies ? (
                       <Cardback cardbacktitle={CardBackTitleUpcomingMovies} />
@@ -203,8 +160,12 @@ export default class Homepage extends Component<{}, HomepageState> {
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <div
-                    onMouseEnter={this.NowPlayinghandleMouseEnter}
-                    onMouseLeave={this.NowPlayinghandleMouseLeave}
+                    onMouseEnter={() =>
+                      this.handleMouseEnter("isFlippedNowPlayingMovies")
+                    }
+                    onMouseLeave={() =>
+                      this.handleMouseLeave("isFlippedNowPlayingMovies")
+                    }
                   >
                     {isFlippedNowPlayingMovies ? (
                       <Cardback cardbacktitle={CardBackNowPlayingMovies} />
@@ -221,3 +182,20 @@ export default class Homepage extends Component<{}, HomepageState> {
     );
   }
 }
+
+interface SocialLinkProps {
+  href: string;
+  imageSrc: string;
+}
+
+const SocialLink: React.FC<SocialLinkProps> = ({ href, imageSrc }) => (
+  <a href={href} target="_blank" rel="noreferrer">
+    <img
+      src={imageSrc}
+      alt="Social Link Logo"
+      style={{ margin: "10px", width: "61.3px", height: "52.2624px" }}
+    />
+  </a>
+);
+
+export default Homepage;

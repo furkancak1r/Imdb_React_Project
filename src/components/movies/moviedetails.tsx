@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MovieService } from "../../services/movie.service";
-import { MovieDetailsTypes } from "../../interfaces/MovieDetailsTypes";
+import { MovieDetailsTypes } from "../../interfaces/MovieDetailsTypesInterface";
 
 export default function Moviedetails() {
   // eslint-disable-next-line react-hooks/exhaustive-deps

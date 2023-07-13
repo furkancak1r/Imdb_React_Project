@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Component } from "react";
 import { MovieService } from "../../services/movie.service";
-import { Movie, MovieResponse } from "../../interfaces/MovieResponse";
+import { Movie, MovieResponse } from "../../interfaces/MovieResponseInterface";
 import { Link } from "react-router-dom";
 import Pagination from "../../utils/pagination";
 import "./styles.css";
