@@ -29,21 +29,24 @@ export default class Pagination extends Component<Props> {
     const { pageNumber } = this.props;
 
     return (
-      <nav style={{ cursor: "pointer" ,display:"flex",justifyContent: "center"}} aria-label="Page navigation example">
+      <nav
+        style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}
+        aria-label="Page navigation example"
+      >
         <ul className="pagination">
           {pageNumber > 1 && ( // Bu satırı ekledim
-          <li className="page-item">
-            <a className="page-link" aria-label="Previous">
-              <span aria-hidden="true">«</span>
-              <span
-                onClick={this.handleDecreasePageNumber}
-                className="sr-only"
-              >
-                Previous
-              </span>
-            </a>
-          </li>
-          )} 
+            <li className="page-item">
+              <a className="page-link" aria-label="Previous">
+                <span aria-hidden="true">«</span>
+                <span
+                  onClick={this.handleDecreasePageNumber}
+                  className="sr-only"
+                >
+                  Previous
+                </span>
+              </a>
+            </li>
+          )}
           {pageNumber > 1 && (
             <li
               onClick={() => this.handleDataChange(pageNumber - 1)}

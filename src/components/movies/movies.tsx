@@ -3,8 +3,9 @@ import { Component } from "react";
 import { MovieService } from "../../services/movie.service";
 import { Movie, MovieResponse } from "../../interfaces/MovieResponse";
 import { Link } from "react-router-dom";
-import Pagination from "../pagination";
+import Pagination from "../../utils/pagination";
 import "./styles.css";
+import { handleArrowDown, handleArrowUp } from "../../utils/handleKeyDown";
 interface State {
   movieResponse: MovieResponse;
   movies: Movie[];
@@ -64,9 +65,11 @@ export default class Movies extends Component<{}, State> {
 
   handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "ArrowDown") {
-      this.handleArrowDown();
+      event.preventDefault();
+      handleArrowDown(this);
     } else if (event.key === "ArrowUp") {
-      this.handleArrowUp();
+      event.preventDefault();
+      handleArrowUp(this);
     } else if (event.key === "Enter") {
       event.preventDefault();
       this.handleInputChange(undefined, this.state.movieName);
@@ -74,61 +77,6 @@ export default class Movies extends Component<{}, State> {
       if (element) {
         element.style.display = "none";
       }
-    }
-  };
-  handleArrowDown = () => {
-    const listGroupItems = document.getElementsByClassName("list-group-item");
-    const currentItem = document.querySelector(".list-group-item.lightgray");
-
-    // Eğer mevcut bir öğe varsa, stilini temizle
-    if (currentItem) {
-      currentItem.classList.remove("lightgray");
-      const nextIndex =
-        Array.from(listGroupItems).findIndex((item) => item === currentItem) +
-        1;
-      const nextItem = listGroupItems.item(nextIndex);
-      if (nextItem) {
-        nextItem.classList.add("lightgray");
-        this.setState({ movieName: (nextItem as any).innerText });
-      } else {
-        listGroupItems[0]?.classList.add("lightgray");
-        this.setState({ movieName: (listGroupItems[0] as any)?.innerText });
-      }
-    } else if (listGroupItems.length > 0) {
-      // Mevcut bir öğe yoksa, ilk öğeyi boyayın
-      listGroupItems[0]?.classList.add("lightgray");
-      this.setState({ movieName: (listGroupItems[0] as any)?.innerText });
-    }
-  };
-
-  handleArrowUp = () => {
-    const listGroupItems = document.getElementsByClassName("list-group-item");
-    const currentItem = document.querySelector(".list-group-item.lightgray");
-
-    // Eğer mevcut bir öğe varsa, stilini temizle
-    if (currentItem) {
-      currentItem.classList.remove("lightgray");
-      const prevIndex =
-        Array.from(listGroupItems).findIndex((item) => item === currentItem) -
-        1;
-      const prevItem = listGroupItems.item(prevIndex);
-      if (prevItem) {
-        prevItem.classList.add("lightgray");
-        this.setState({ movieName: (prevItem as any).innerText });
-      } else {
-        listGroupItems[listGroupItems.length - 1]?.classList.add("lightgray");
-        this.setState({
-          movieName: (listGroupItems[listGroupItems.length - 1] as any)
-            ?.innerText,
-        });
-      }
-    } else if (listGroupItems.length > 0) {
-      // Mevcut bir öğe yoksa, son öğeyi boyayın
-      listGroupItems[listGroupItems.length - 1]?.classList.add("lightgray");
-      this.setState({
-        movieName: (listGroupItems[listGroupItems.length - 1] as any)
-          ?.innerText,
-      });
     }
   };
 
@@ -310,7 +258,10 @@ export default class Movies extends Component<{}, State> {
                   style={{ position: "absolute" }}
                 >
                   <div
-                    style={{ width: "200px", boxShadow: "7px 10px 30px black" }}
+                    style={{
+                      width: "200px",
+                      boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+                    }}
                   >
                     {checkInput ? (
                       <ul className="list-group">
